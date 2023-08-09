@@ -20,18 +20,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
   avatar: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const cardSchema = new mongoose.Schema({
@@ -43,20 +43,20 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String,
-    required: true
+    required: true,
   },
   owner: {
     type: ObjectId,
-    required: true
+    required: true,
   },
   likes: [{
     type: Array,
-    default: ''
+    default: '',
   }],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 app.listen(PORT, () => {
