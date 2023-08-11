@@ -14,6 +14,14 @@ mongoose.connect(DB_URL, {
   useUnifiedTopology: true,
 });
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64d6234484c61dbd25cf87da', // вставьте сюда _id созданного в предыдущем пункте пользователя
+  };
+
+  next();
+});
+
 app.use('/users', require('./routes/user'));
 
 app.listen(PORT, () => {
