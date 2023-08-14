@@ -23,6 +23,9 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', require('./routes/user'));
+app.use('/cards', require('./routes/card'));
+
+app.use('*', (req, res) => res.status(404).send({ message: 'Ресурс не найден' }));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
