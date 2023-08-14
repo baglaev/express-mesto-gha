@@ -40,7 +40,7 @@ module.exports.addLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.card._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(400).send({ message: 'Карточка с указанным _id - не найдена.' });
+        res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
         return;
       }
       res.send(card);
@@ -52,7 +52,7 @@ module.exports.deleteLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.card._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(400).send({ message: 'Карточка с указанным _id - не найдена.' });
+        res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
         return;
       }
       res.send(card);
