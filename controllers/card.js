@@ -65,13 +65,13 @@ module.exports.addLike = (req, res) => {
     .orFail()
     .then((like) => res.send({ data: like }))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
-      }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id' });
+        res.status(400).send({ message: `Некорректный id: ${req.params.userId}` });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: `Карточка по указанному id: ${req.params.userId} не найдена` });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -80,12 +80,12 @@ module.exports.deleteLike = (req, res) => {
     .orFail()
     .then((dislike) => res.send({ data: dislike }))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
-      }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id' });
+        res.status(400).send({ message: `Некорректный id: ${req.params.cardId}` });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: `Карточка по указанному id: ${req.params.cardId} не найдена` });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
