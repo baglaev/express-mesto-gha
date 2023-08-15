@@ -80,10 +80,10 @@ module.exports.deleteLike = (req, res) => {
     .orFail()
     .then((dislike) => res.send({ data: dislike }))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
-      } else if (err.name === 'CastError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Некорректный id' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
