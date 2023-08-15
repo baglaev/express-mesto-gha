@@ -76,7 +76,7 @@ module.exports.addLike = (req, res) => {
 };
 
 module.exports.deleteLike = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndRemove(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .orFail()
     .then((dislike) => res.send({ data: dislike }))
     .catch((err) => {
