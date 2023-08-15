@@ -40,7 +40,7 @@ module.exports.removeCard = (req, res) => {
 //  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
 //     .then((card) => {
 //       if (!card) {
-//         res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
+//         res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
 //         return;
 //       }
 //       res.send(card);
@@ -52,7 +52,7 @@ module.exports.removeCard = (req, res) => {
 //   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
 //     .then((card) => {
 //       if (!card) {
-//         res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
+//         res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
 //         return;
 //       }
 //       res.send(card);
@@ -62,34 +62,30 @@ module.exports.removeCard = (req, res) => {
 
 module.exports.addLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
-    .orFail(() => {
-      throw new Error('404');
-    })
+    .orFail()
     .then((like) => res.send({ data: like }))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
-      }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id' });
+        res.status(400).send({ message: 'Некорректный id' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
 module.exports.deleteLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
-    .orFail(() => {
-      throw new Error('404');
-    })
+    .orFail()
     .then((dislike) => res.send({ data: dislike }))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: 'Карточка с указанным _id - не найдена.' });
-      }
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id' });
+        res.status(400).send({ message: 'Некорректный id' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'Карточка с указанным _id - не найдена' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
