@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -6,9 +8,42 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then(() => {
+      const token = jwt.sign({ _id: '64d6234484c61dbd25cf87da' }, 'some-secret-key', { expiresIn: '7d' });
+      res.cookie('token', token, { httpOnly: true });
+      // res.send({ token });
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+};
+
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+  User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  });
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => User.create({
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
