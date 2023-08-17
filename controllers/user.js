@@ -8,13 +8,31 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
+module.exports.getUserInfo = (req, res) => {
+  const { _id } = req.user;
+  User.findById(_id)
+    .orFail()
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: `Некорректный id: ${req.params.userId}` });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: `Пользователь по указанному id: ${req.params.userId} не найден` });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
+};
+
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
-    .then(() => {
-      const token = jwt.sign({ _id: '64d6234484c61dbd25cf87da' }, 'some-secret-key', { expiresIn: '7d' });
-      res.cookie('token', token, { httpOnly: true });
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id, email: user.email }, 'some-secret-key', { expiresIn: '7d' });
+      res.cookie('jwt', token, { httpOnly: true });
       // res.send({ token });
     })
     .catch((err) => {
