@@ -22,23 +22,6 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-// module.exports.removeCard = (req, res, next) => {
-//   Card.findByIdAndRemove(req.params.cardId)
-//     .orFail()
-//     .then((card) => {
-//       res.send(card);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         next(new BadRequestError(err.message));
-//       } else if (err.name === 'DocumentNotFoundError') {
-//         next(new NotFoundError(`Некорректный id: ${req.params.userId}`));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 module.exports.removeCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {

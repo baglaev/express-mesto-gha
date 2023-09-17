@@ -11,24 +11,6 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
-// module.exports.getUserInfo = (req, res, next) => {
-//   const { _id } = req.user;
-//   User.findById(_id)
-//     .orFail()
-//     .then((user) => {
-//       res.send(user);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         next(new BadRequestError(`Некорректный id: ${req.params.userId}`));
-//       } else if (err.name === 'DocumentNotFoundError') {
-//         next(new NotFoundError(`Пользователь по указанному id: ${req.params.userId} не найден`));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.status(200).send(user))
